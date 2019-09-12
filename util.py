@@ -161,3 +161,8 @@ def rm_file(filename):
         os.remove(filename)
     elif os.path.isfile(fullpath):
         os.remove(fullpath)
+
+def get_password(password, salt):
+    hash = sha1()
+    hash.update(("%s%s" % (salt, password)).encode("utf-8"))
+    return hash.hexdigest()

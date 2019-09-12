@@ -32,6 +32,7 @@ import pymongo
 from pymongo.errors import CollectionInvalid
 from tornado.options import define, options
 import tornado.options
+from util import *
 
 from constants import VERSION
 
