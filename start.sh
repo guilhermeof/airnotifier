@@ -26,6 +26,6 @@ if [ -n "$MONGO_PORT" ]; then
 fi
 
 echo "Installing AirNotifier ..."
-pipenv run ./install.py
+python ./install.py
 echo "Starting Airnotifier ..."
 python airnotifier.py >> /var/log/airnotifier/airnotifier.log 2>> /var/log/airnotifier/airnotifier.err
