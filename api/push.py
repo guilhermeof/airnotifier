@@ -38,6 +38,8 @@ from constants import (
     DEVICE_TYPE_ANDROID,
     DEVICE_TYPE_WNS,
     DEVICE_TYPE_FCM,
+    DEVICE_TYPE_IOS_FCM,
+    DEVICE_TYPE_ANDROID_FCM
 )
 import logging
 
@@ -107,8 +109,8 @@ class PushHandler(APIBaseHandler):
                     self.send_response(INTERNAL_SERVER_ERROR, dict(error=str(ex)))
                     return
 
-            #  if device in [DEVICE_TYPE_FCM, DEVICE_TYPE_ANDROID]:
-            if device.endswith(DEVICE_TYPE_FCM):
+            if device in [DEVICE_TYPE_FCM, DEVICE_TYPE_ANDROID, DEVICE_TYPE_ANDROID_FCM, DEVICE_TYPE_IOS_FCM]:
+            # if device.endswith(DEVICE_TYPE_FCM):
                 fcm_payload = requestPayload.get("fcm", {})
                 try:
                     fcmconn = self.fcmconnections[self.app["shortname"]][0]
