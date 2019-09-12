@@ -1,4 +1,4 @@
-https = True
+https = False
 httpscertfile = "/path/to/ssl/certificate.cert"
 httpskeyfile = "/path/to/ssl/server.key"
 
