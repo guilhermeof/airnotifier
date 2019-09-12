@@ -156,7 +156,7 @@ class AirNotifierApp(tornado.web.Application):
                             extra=extra,
                             apns=kwargs.get("apns", {}),
                         )
-                elif token["device"] == DEVICE_TYPE_FCM or token["device"] == DEVICE_TYPE_ANDROID_FCM or token["device"] == DEVICE_TYPE_IOS_FCM:
+                elif token["device"] == DEVICE_TYPE_FCM:
                     fcm.process(
                         token=t, alert=alert, extra=extra, fcm=kwargs.get("fcm", {})
                     )
