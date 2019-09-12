@@ -25,5 +25,7 @@ if [ -n "$MONGO_PORT" ]; then
         sed -i "s/mongoport = 27017/mongoport = $MONGO_PORT/g" /config/airnotifier.conf
 fi
 
+echo "Installing AirNotifier ..."
+pipenv run ./install.py
 echo "Starting Airnotifier ..."
 python airnotifier.py >> /var/log/airnotifier/airnotifier.log 2>> /var/log/airnotifier/airnotifier.err
