@@ -53,7 +53,7 @@ class FCMClient(PushService):
                     _logger.error("Error treating field " + k)
 
             elif v is not None:
-                formatted[k] = str(v)
+                formatted[k] = v.encode('utf-8')
 
         return formatted
 

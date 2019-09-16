@@ -59,6 +59,8 @@ from constants import (
     DEVICE_TYPE_ANDROID,
     DEVICE_TYPE_WNS,
     DEVICE_TYPE_MPNS,
+    DEVICE_TYPE_IOS_FCM,
+    DEVICE_TYPE_ANDROID_FCM
 )
 from pushservices.apns import PayLoad
 from pushservices.gcm import (
@@ -112,12 +114,12 @@ class APIBaseHandler(tornado.web.RequestHandler):
             self.send_response(BAD_REQUEST, dict(error="app key is required"))
 
         self.token = self.get_argument("token", None)
-        self.device = self.get_argument("device", DEVICE_TYPE_IOS).lower()
-        if self.device == DEVICE_TYPE_IOS and self.token:
+        self.device = self.get_argument("device", DEVICE_TYPE_IOS_FCM).lower()
+        if self.device == DEVICE_TYPE_IOS_FCM and self.token:
             if len(self.token) != 64:
                 # hack until we resolve some bugs at the moodle side
                 if len(self.token) > 64:
-                    self.device = DEVICE_TYPE_ANDROID
+                    self.device = DEVICE_TYPE_ANDROID_FCM
                 else:
                     self.send_response(BAD_REQUEST, dict(error="Invalid token"))
                     return
@@ -128,7 +130,7 @@ class APIBaseHandler(tornado.web.RequestHandler):
                     self.send_response(BAD_REQUEST, dict(error="Invalid token"))
         else:
             # if it's not ios then we force android type device here
-            self.device = DEVICE_TYPE_ANDROID
+            self.device = DEVICE_TYPE_ANDROID_FCM
 
         self.app = self.masterdb.applications.find_one({"shortname": self.appname})
 
@@ -290,12 +292,12 @@ class TokenV1Handler(APIBaseHandler):
             self.send_response(FORBIDDEN, dict(error="No permission to create token"))
             return
 
-        device = self.get_argument("device", DEVICE_TYPE_IOS).lower()
-        if device == DEVICE_TYPE_IOS and devicetoken:
+        device = self.get_argument("device", DEVICE_TYPE_IOS_FCM).lower()
+        if device == DEVICE_TYPE_IOS_FCM and devicetoken:
             if len(devicetoken) != 64:
                 # hack until we resolve some bugs at the moodle side
                 if len(devicetoken) > 64:
-                    device = DEVICE_TYPE_ANDROID
+                    device = DEVICE_TYPE_ANDROID_FCM
                 else:
                     self.send_response(BAD_REQUEST, dict(error="Invalid token"))
                     return
@@ -306,7 +308,7 @@ class TokenV1Handler(APIBaseHandler):
                     self.send_response(BAD_REQUEST, dict(error="Invalid token"))
         else:
             # if it's not ios then we force android type device here
-            device = DEVICE_TYPE_ANDROID
+            device = DEVICE_TYPE_ANDROID_FCM
 
         channel = self.get_argument("channel", "default")
 
@@ -347,7 +349,7 @@ class NotificationHandler(APIBaseHandler):
         # iOS and Android shared params (use sliptlines trick to remove line ending)
         alert = "".join(self.get_argument("alert").splitlines())
 
-        device = self.get_argument("device", DEVICE_TYPE_IOS).lower()
+        device = self.get_argument("device", DEVICE_TYPE_IOS_FCM).lower()
         channel = self.get_argument("channel", "default")
         # Android
         collapse_key = self.get_argument("collapse_key", "")
@@ -380,7 +382,7 @@ class NotificationHandler(APIBaseHandler):
                 customparams[name] = self.get_argument(name)
         logmessage = "Message length: %s, Access key: %s" % (len(alert), self.appkey)
         self.add_to_log("%s notification" % self.appname, logmessage)
-        if device == DEVICE_TYPE_IOS:
+        if device == DEVICE_TYPE_IOS_FCM:
             pl = PayLoad(
                 alert=alert,
                 sound=sound,
@@ -404,7 +406,7 @@ class NotificationHandler(APIBaseHandler):
                 self.send_response(OK)
             except Exception as ex:
                 self.send_response(INTERNAL_SERVER_ERROR, dict(error=str(ex)))
-        elif device == DEVICE_TYPE_ANDROID:
+        elif device == DEVICE_TYPE_ANDROID_FCM:
             try:
                 gcm = self.gcmconnections[self.app["shortname"]][0]
                 data = dict({"message": alert}.items() + customparams.items())
