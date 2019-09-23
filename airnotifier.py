@@ -51,7 +51,7 @@ from constants import (
     DEVICE_TYPE_MPNS,
 )
 
-define("port", default=8801, help="Application server listen port", type=int)
+define("port", default=80, help="Application server listen port", type=int)
 
 define("pemdir", default="pemdir", help="Directory to store pems")
 define(
